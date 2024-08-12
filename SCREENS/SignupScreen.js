@@ -1,13 +1,14 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { View, TextInput, Button, StyleSheet } from 'react-native';
+import axios from 'axios';
 
 const SignupScreen = ({ navigation }) => {
-    const [email, setEmail] = React.useState('');
-    const [name, setName] = React.useState('');
-    const [password, setPassword] = React.useState('');
+    const [email, setEmail] = useState('');
+    const [name, setName] = useState('');
+    const [password, setPassword] = useState('');
 
-    const handleSignup = () => {
-        // Implement signup logic here
+    const handleSignup = async () => {
+        await axios.post("https://historyhunt-12cfa-default-rtdb.firebaseio.com/user.json", { "email": email, "username": name, "password": password })
         navigation.navigate('Login');
     };
 

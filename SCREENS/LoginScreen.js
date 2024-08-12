@@ -1,16 +1,45 @@
-import React from 'react';
+import React , {useState} from 'react';
 import { View, TextInput, Button, StyleSheet } from 'react-native';
+import axios from 'axios';
 
 const LoginScreen = ({ navigation }) => {
-    const [email, setEmail] = React.useState('');
-    const [password, setPassword] = React.useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
 
-    const handleLogin = () => {
-        // Implement login logic here
-        navigation.navigate('Start');
+    const handleLogin = async () => {
+        const response = await axios.get("https://historyhunt-12cfa-default-rtdb.firebaseio.com/user.json");
+        const users = response.data;
+        const userToString = JSON.stringify(users);
+        console.log("1", users);
+        console.log("2", userToString);
+
+
+    
+        for (const id in users) {
+            console.log("3", users[id].email)
+            console.log("4", users[id].password)
+          
+            if (users[id].email === email && users[id].password === password) {
+                console.log("success");
+                navigation.navigate('Start');
+            } else {
+            
+                
+
+                console.log("login failed");
+            }
+                
+        }
     };
+    
 
-    return (
+
+
+
+
+    
+    
+    return (    
         <View style={styles.container}>
             <TextInput
                 style={styles.input}
@@ -47,4 +76,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default LoginScreen;
+export default LoginScreen
