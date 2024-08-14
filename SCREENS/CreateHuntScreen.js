@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, TextInput, Button, StyleSheet } from 'react-native';
+import axios from "axios";
 
 const CreateHuntScreen = ({ navigation }) => {
     const [title, setTitle] = React.useState('');
@@ -7,7 +8,17 @@ const CreateHuntScreen = ({ navigation }) => {
 
     const handleCreateHunt = () => {
         // Implement create hunt logic here
-        navigation.navigate('Invite');
+        if(estimatedTime && title){
+axios.post("https://historyhunt-12cfa-default-rtdb.firebaseio.com/hunts.json", { "title": title, "estimatedTime": estimatedTime})
+navigation.navigate('Invite', {
+    title: title,
+    estimatedTime: estimatedTime,
+    // image: image,
+});
+        } else {
+            alert('Please fill out all fields.');
+        }
+      
     };
 
     return (
