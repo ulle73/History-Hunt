@@ -1,22 +1,43 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Button, StyleSheet } from 'react-native';
 import MapViewComponent from '../COMPONENTS/MapView';
 
+const HuntMapScreen = ({ navigation, route }) => {
+    const { title, estimatedTime, invitedFriends } = route.params;
+    const [selectedLocations, setSelectedLocations] = useState([]);
 
-const HuntMapScreen = ({ navigation }) => {
-    const markers = [
-        { coordinate: { latitude: 37.78825, longitude: -122.4324 } },
-        // Lägg till fler markörer här om det behövs
-    ];
+    const handleMarkerPress = (coordinate) => {
+        setSelectedLocations([...selectedLocations, coordinate]);
+    };
 
-    const handleCapturePhoto = () => {
-        navigation.navigate('TakePhoto');
+    const handleCreateHunt = async () => {
+        try {
+            const response = await axios.post('https://historyhunt-12cfa-default-rtdb.firebaseio.com/hunts.json', {
+                title,
+                estimatedTime,
+                invitedFriends,
+                locations: selectedLocations,
+            });
+
+            const huntId = response.data.name;
+
+            for (const email of invitedFriends) {
+                await axios.post(`https://historyhunt-12cfa-default-rtdb.firebaseio.com/activeHunts/${email}.json`, {
+                    huntId,
+                    title,
+                });
+            }
+
+            navigation.navigate('Start');
+        } catch (error) {
+            console.error('Error creating hunt:', error);
+        }
     };
 
     return (
         <View style={styles.container}>
-            <MapViewComponent markers={markers} />
-            <Button title="Capture Photo" onPress={handleCapturePhoto} />
+            <MapViewComponent markers={[]} onMarkerPress={handleMarkerPress} />
+            <Button title="History Hunt" onPress={handleCreateHunt} />
         </View>
     );
 };

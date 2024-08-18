@@ -12,6 +12,10 @@ import HuntMapScreen from './SCREENS/HuntMapScreen';
 import TakePhotoScreen from './SCREENS/TakePhotoScreen';
 
 
+
+
+
+
 const Stack = createStackNavigator();
 
 const App = () => (
