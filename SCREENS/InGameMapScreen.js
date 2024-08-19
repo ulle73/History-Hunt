@@ -1,23 +1,48 @@
-import { Alert, View, Image, StyleSheet, Text, Button, ScrollView, TextInput } from "react-native";
-import { launchCameraAsync, useCameraPermissions, PermissionStatus } from "expo-image-picker";
-import { useState } from "react";
+import React, { useState } from 'react';
+import { Alert, View, Image, StyleSheet, Text, Button } from 'react-native';
+import { launchCameraAsync, useCameraPermissions, PermissionStatus } from 'expo-image-picker';
+import * as MediaLibrary from 'expo-media-library';
 
-// ImagePicker-komponenten
 function ImagePicker({ onTakeImage }) {
     const [pickedImage, setPickedImage] = useState();
-
-    const [cameraPermissionInformation, requestPermission] = useCameraPermissions();
+    const [cameraPermissionInformation, requestCameraPermission] = useCameraPermissions();
+    const [mediaPermissionInformation, requestMediaPermission] = MediaLibrary.usePermissions();
 
     async function verifyPermissions() {
+        // Kolla kamerabehörigheter
         if (cameraPermissionInformation.status === PermissionStatus.UNDETERMINED) {
-            const permissionResponse = await requestPermission();
-            return permissionResponse.granted;
+            const permissionResponse = await requestCameraPermission();
+            if (!permissionResponse.granted) {
+                Alert.alert(
+                    'Insufficient Permissions!',
+                    'You need to grant camera permissions to use this app.'
+                );
+                return false;
+            }
         }
-
         if (cameraPermissionInformation.status === PermissionStatus.DENIED) {
             Alert.alert(
                 'Insufficient Permissions!',
-                "You need to grant camera permissions to use this app."
+                'You need to grant camera permissions to use this app.'
+            );
+            return false;
+        }
+
+        // Kolla media bibliotek behörigheter
+        if (mediaPermissionInformation.status === PermissionStatus.UNDETERMINED) {
+            const permissionResponse = await requestMediaPermission();
+            if (!permissionResponse.granted) {
+                Alert.alert(
+                    'Insufficient Permissions!',
+                    'You need to grant media library permissions to save photos.'
+                );
+                return false;
+            }
+        }
+        if (mediaPermissionInformation.status === PermissionStatus.DENIED) {
+            Alert.alert(
+                'Insufficient Permissions!',
+                'You need to grant media library permissions to save photos.'
             );
             return false;
         }
@@ -42,6 +67,14 @@ function ImagePicker({ onTakeImage }) {
             const imageUri = result.assets[0].uri; // Hämta URI från första objektet i assets-arrayen
             setPickedImage(imageUri);
             onTakeImage(imageUri);
+
+            // Spara bilden till media library
+            try {
+                const asset = await MediaLibrary.createAssetAsync(imageUri);
+                console.log('Image saved to media library:', asset);
+            } catch (error) {
+                console.error('Error saving image to media library:', error);
+            }
         }
     }
 
@@ -61,61 +94,7 @@ function ImagePicker({ onTakeImage }) {
     );
 }
 
-// InGameMapScreen-komponenten
-function InGameMapScreen() {
-    const [enteredTitle, setEnteredTitle] = useState('');
-    const [selectedImage, setSelectedImage] = useState('');
-
-    function changeTitleHandler(enteredText) {
-        setEnteredTitle(enteredText);
-    }
-
-    function takeImageHandler(imageUri) {
-        setSelectedImage(imageUri);
-    }
-
-    function savePlaceHandler() {
-        console.log("Title:", enteredTitle);
-        console.log("Image URI:", selectedImage);
-    }
-
-    return (
-        <ScrollView style={styles.form}>
-            <View>
-                <Text style={styles.label}>Title</Text>
-                <TextInput 
-                    onChangeText={changeTitleHandler} 
-                    value={enteredTitle} 
-                    style={styles.input} 
-                />
-            </View>
-            <ImagePicker onTakeImage={takeImageHandler} />
-            <Button title="Add Place" onPress={savePlaceHandler} />
-        </ScrollView>
-    );
-}
-
-export default InGameMapScreen;
-
 const styles = StyleSheet.create({
-    form: {
-        flex: 1,
-        padding: 24
-    },
-    label: {
-        fontWeight: 'bold',
-        marginBottom: 4,
-        color: '#333',
-    },
-    input: {
-        marginVertical: 8,
-        paddingHorizontal: 4,
-        paddingVertical: 8,
-        fontSize: 16,
-        borderBottomWidth: 2,
-        borderBottomColor: '#ccc',
-        color: '#333',
-    },
     imagePreview: {
         width: '100%',
         height: 200,
@@ -130,3 +109,5 @@ const styles = StyleSheet.create({
         height: '100%',
     }
 });
+
+export default ImagePicker;
