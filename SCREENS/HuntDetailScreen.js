@@ -42,7 +42,7 @@ const HuntDetailScreen = ({ navigation, route }) => {
                 ))}
             </MapView>
 
-            <Button title="Start Hunt" onPress={() => navigation.navigate('InGame', { huntId: hunt.id })} />
+            <Button title="Start Hunt" onPress={() => navigation.navigate('InGame', { huntId: hunt.id, hunt })} />
         </View>
     );
 };

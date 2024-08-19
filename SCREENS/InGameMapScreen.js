@@ -1,11 +1,16 @@
+import React, { useState } from 'react';
 import { Alert, View, Image, StyleSheet, Text, Button, ScrollView, TextInput } from "react-native";
 import { launchCameraAsync, useCameraPermissions, PermissionStatus } from "expo-image-picker";
-import { useState } from "react";
+import MapView, { Marker } from 'react-native-maps';
+import MapViewDirections from 'react-native-maps-directions';
+
+const GOOGLE_MAPS_APIKEY = 'AIzaSyCjCPzxEsoRdmj2A5mX7YO_y_yd4H_tVEg'; // Sätt in din Google Maps API-nyckel här
+
+
 
 // ImagePicker-komponenten
 function ImagePicker({ onTakeImage }) {
     const [pickedImage, setPickedImage] = useState();
-
     const [cameraPermissionInformation, requestPermission] = useCameraPermissions();
 
     async function verifyPermissions() {
@@ -63,21 +68,18 @@ function ImagePicker({ onTakeImage }) {
 }
 
 // InGameMapScreen-komponenten
-function InGameMapScreen() {
+function InGameMapScreen({ route }) {
+    const { hunt } = route.params;
     const [enteredTitle, setEnteredTitle] = useState('');
     const [selectedImage, setSelectedImage] = useState('');
+    const [selectedMarker, setSelectedMarker] = useState(null);
 
     function changeTitleHandler(enteredText) {
         setEnteredTitle(enteredText);
     }
 
-    function takeImageHandler(imageUri) {
-        setSelectedImage(imageUri);
-    }
-
-    function savePlaceHandler() {
-        console.log("Title:", enteredTitle);
-        console.log("Image URI:", selectedImage);
+    function handleMarkerPress(location) {
+        setSelectedMarker(location);
     }
 
     return (
@@ -90,8 +92,55 @@ function InGameMapScreen() {
                     style={styles.input} 
                 />
             </View>
-            <ImagePicker onTakeImage={takeImageHandler} />
-            <Button title="Add Place" onPress={savePlaceHandler} />
+
+            <MapView
+                style={styles.map}
+                initialRegion={{
+                    latitude: hunt.locations.startLocation.latitude,
+                    longitude: hunt.locations.startLocation.longitude,
+                    latitudeDelta: 0.05,
+                    longitudeDelta: 0.05,
+                }}
+            >
+                {/* Markör för startplats */}
+                <Marker
+                    coordinate={hunt.locations.startLocation}
+                    title="Start"
+                    pinColor="green"
+                    onPress={() => handleMarkerPress(hunt.locations.startLocation)}
+                />
+                
+                {/* Markör för slutplats */}
+                <Marker
+                    coordinate={hunt.locations.endLocation}
+                    title="End"
+                    pinColor="red"
+                    onPress={() => handleMarkerPress(hunt.locations.endLocation)}
+                />
+
+                {/* Markörer för andra platser */}
+                {hunt.locations.selectedLocations.map((location, index) => (
+                    <Marker
+                        key={index}
+                        coordinate={location}
+                        title={`Point ${index + 1}`}
+                        onPress={() => handleMarkerPress(location)}
+                    />
+                ))}
+
+                {/* Rutt */}
+                {selectedMarker && (
+                    <MapViewDirections
+                        origin={hunt.locations.startLocation}
+                        destination={selectedMarker}
+                        apikey={GOOGLE_MAPS_APIKEY}
+                        strokeWidth={5}
+                        strokeColor="blue"
+                    />
+                )}
+            </MapView>
+
+            <Button title="Add Place" onPress={() => {}} />
         </ScrollView>
     );
 }
@@ -129,5 +178,10 @@ const styles = StyleSheet.create({
     image: {
         width: '100%',
         height: '100%',
-    }
+    },
+    map: {
+        width: '100%',
+        height: 400,
+        marginVertical: 16,
+    },
 });
