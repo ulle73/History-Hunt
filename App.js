@@ -9,7 +9,8 @@ import InviteScreen from './SCREENS/InviteScreen';
 import HuntConfirmationScreen from './SCREENS/HuntConfirmationScreen';
 import HuntDetailScreen from './SCREENS/HuntDetailScreen';
 import HuntMapScreen from './SCREENS/HuntMapScreen';
-import TakePhotoScreen from './SCREENS/TakePhotoScreen';
+// import TakePhotoScreen from './SCREENS/TakePhotoScreen';
+import InGameMapScreen from './SCREENS/InGameMapScreen'
 
 
 
@@ -29,7 +30,7 @@ const App = () => (
             <Stack.Screen name="HuntConfirmation" component={HuntConfirmationScreen} />
             <Stack.Screen name="HuntDetail" component={HuntDetailScreen} />
             <Stack.Screen name="HuntMap" component={HuntMapScreen} />
-            <Stack.Screen name="TakePhoto" component={TakePhotoScreen} />
+            <Stack.Screen name="InGame" component={InGameMapScreen} />
         </Stack.Navigator>
     </NavigationContainer>
 );

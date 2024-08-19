@@ -253,6 +253,7 @@ import React, { useState } from 'react';
 import { View, Button, StyleSheet, Text } from 'react-native';
 import MapViewComponent from '../COMPONENTS/MapView';
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const HuntMapScreen = ({ navigation, route }) => {
     const { title, estimatedTime, invitedFriends } = route.params;
@@ -279,7 +280,11 @@ const HuntMapScreen = ({ navigation, route }) => {
             return;
         }
 
+
+
         try {
+
+            const id = await AsyncStorage.getItem('loggedInUser');
             const response = await axios.post('https://historyhunt-12cfa-default-rtdb.firebaseio.com/hunts.json', {
                 title,
                 estimatedTime,
@@ -287,6 +292,7 @@ const HuntMapScreen = ({ navigation, route }) => {
                 // startLocation,
                 // endLocation,
                 locations: {startLocation, endLocation, selectedLocations},
+                creator: id
             });
 
         

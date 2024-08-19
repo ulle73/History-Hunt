@@ -1,6 +1,7 @@
 import React , {useState} from 'react';
 import { View, TextInput, Button, StyleSheet } from 'react-native';
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const LoginScreen = ({ navigation }) => {
     const [email, setEmail] = useState('');
@@ -21,6 +22,9 @@ const LoginScreen = ({ navigation }) => {
           
             if (users[id].email === email && users[id].password === password) {
                 console.log("success");
+await AsyncStorage.setItem(
+    'loggedInUser', id
+)
                 navigation.navigate('Start');
             } else {
             
