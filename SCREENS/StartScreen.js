@@ -33,17 +33,17 @@ const StartScreen = ({ navigation }) => {
                 // Kategorisera hunts
                 for (const key in huntsData) {
                     const hunt = huntsData[key];
-                    console.log(`Hunt ID: ${key}, Creator ID: ${hunt.creator}, Logged in User ID: ${id}`);
+                    //console.log(`Hunt ID: ${key}, Creator ID: ${hunt.creator}, Logged in User ID: ${id}`);
                     
                     if (hunt.creator === id) {
-                        console.log("Adding to planned hunts:", hunt.title);
+                       // console.log("Adding to planned hunts:", hunt.title);
                         planned.push({ id: key, ...hunt });
                     } else if (hunt.invitedFriends && hunt.invitedFriends.includes(userData.email)) {
                         active.push({ id: key, ...hunt });
                     }
                 }
     
-                console.log("Planned Hunts:", planned);
+                //console.log("Planned Hunts:", planned);
                 setActiveHunts(active);
                 setPlannedHunts(planned);
                 setCompletedHunts(completed);
