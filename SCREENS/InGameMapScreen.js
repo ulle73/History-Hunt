@@ -4,9 +4,8 @@ import { launchCameraAsync, useCameraPermissions, PermissionStatus } from "expo-
 import MapView, { Marker } from 'react-native-maps';
 import MapViewDirections from 'react-native-maps-directions';
 
-const GOOGLE_MAPS_APIKEY = 'AIzaSyCjCPzxEsoRdmj2A5mX7YO_y_yd4H_tVEg'; // Sätt in din Google Maps API-nyckel här
-
-
+// Din Google Maps API-nyckel
+const GOOGLE_MAPS_APIKEY = 'AIzaSyCjCPzxEsoRdmj2A5mX7YO_y_yd4H_tVEg'; 
 
 // ImagePicker-komponenten
 function ImagePicker({ onTakeImage }) {
@@ -82,6 +81,10 @@ function InGameMapScreen({ route }) {
         setSelectedMarker(location);
     }
 
+    function handleTakeImage(imageUri) {
+        setSelectedImage(imageUri);
+    }
+
     return (
         <ScrollView style={styles.form}>
             <View>
@@ -140,6 +143,16 @@ function InGameMapScreen({ route }) {
                 )}
             </MapView>
 
+            {/* Lägg till ImagePicker-komponenten */}
+            <ImagePicker onTakeImage={handleTakeImage} />
+
+            {/* Visa vald bild om det finns en */}
+            {selectedImage ? (
+                <Image source={{ uri: selectedImage }} style={styles.selectedImage} />
+            ) : (
+                <Text>No image selected.</Text>
+            )}
+
             <Button title="Add Place" onPress={() => {}} />
         </ScrollView>
     );
@@ -183,5 +196,10 @@ const styles = StyleSheet.create({
         width: '100%',
         height: 400,
         marginVertical: 16,
+    },
+    selectedImage: {
+        width: '100%',
+        height: 200,
+        marginVertical: 8,
     },
 });
