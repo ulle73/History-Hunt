@@ -3,7 +3,7 @@ import { Alert, View, Image, StyleSheet, Text, Button } from 'react-native';
 import { launchCameraAsync, useCameraPermissions, PermissionStatus } from 'expo-image-picker';
 import * as MediaLibrary from 'expo-media-library';
 
-function ImagePicker({ onTakeImage }) {
+function ImagePicker() {
     const [pickedImage, setPickedImage] = useState();
     const [cameraPermissionInformation, requestCameraPermission] = useCameraPermissions();
     const [mediaPermissionInformation, requestMediaPermission] = MediaLibrary.usePermissions();
@@ -67,7 +67,6 @@ function ImagePicker({ onTakeImage }) {
         if (!result.canceled) {
             const imageUri = result.assets[0].uri; // Hämta URI från första objektet i assets-arrayen
             setPickedImage(imageUri);
-            onTakeImage(imageUri);
 
             // Spara bilden till media library
             try {
