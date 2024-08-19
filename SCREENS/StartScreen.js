@@ -53,7 +53,7 @@ const StartScreen = ({ navigation }) => {
         };
     
         fetchHunts();
-    }, []);
+    }, [plannedHunts]);
 
     const handleHuntPress = (hunt) => {
         // Navigera till en detaljerad vy för hunten
