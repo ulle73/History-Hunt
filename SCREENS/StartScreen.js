@@ -6,8 +6,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from "axios"
 
 
+
 const StartScreen = ({ navigation }) => {
-    const userImage = 'https://cdn-icons-png.flaticon.com/512/17/17004.png'; 
+    const userImage = 'https://cdn-icons-png.flaticon.com/512/17/17004.png'; //ändra till firebasebild
     const activeHunts = [{ id: '1', title: 'Active Hunt 1' }];
     const plannedHunts = [{ id: '2', title: 'Planned Hunt 1' }];
     const completedHunts = [{ id: '3', title: 'Completed Hunt 1' }];
@@ -69,6 +70,13 @@ const StartScreen = ({ navigation }) => {
                 renderItem={({ item }) => <HuntItem title={item.title} />}
                 keyExtractor={(item) => item.id}
             />
+
+
+
+
+
+<Button title="JONATAN" onPress={() => navigation.navigate('HuntConfirmation')} />
+<Button title="ADAM" onPress={() => navigation.navigate('InGame')} />
         </View>
     );
 };
