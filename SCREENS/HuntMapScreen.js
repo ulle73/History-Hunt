@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { View, Button, StyleSheet } from 'react-native';
 import MapViewComponent from '../COMPONENTS/MapView';
+import axios from "axios"
 
 const HuntMapScreen = ({ navigation, route }) => {
     const { title, estimatedTime, invitedFriends } = route.params;
     const [selectedLocations, setSelectedLocations] = useState([]);
+   
 
     const handleMarkerPress = (coordinate) => {
         setSelectedLocations([...selectedLocations, coordinate]);
@@ -12,21 +14,24 @@ const HuntMapScreen = ({ navigation, route }) => {
 
     const handleCreateHunt = async () => {
         try {
+
+            setTimeout(async () => {
             const response = await axios.post('https://historyhunt-12cfa-default-rtdb.firebaseio.com/hunts.json', {
-                title,
-                estimatedTime,
                 invitedFriends,
                 locations: selectedLocations,
+                title,
+                estimatedTime,
             });
+            }, 1000);
 
-            const huntId = response.data.name;
+            // const huntId = response.data.name;
 
-            for (const email of invitedFriends) {
-                await axios.post(`https://historyhunt-12cfa-default-rtdb.firebaseio.com/activeHunts/${email}.json`, {
-                    huntId,
-                    title,
-                });
-            }
+            // for (const email of invitedFriends) {
+            //     await axios.post(`https://historyhunt-12cfa-default-rtdb.firebaseio.com/activeHunts/${email}.json`, {
+            //         huntId,
+            //         title,
+            //     });
+            // }
 
             navigation.navigate('Start');
         } catch (error) {
@@ -34,10 +39,16 @@ const HuntMapScreen = ({ navigation, route }) => {
         }
     };
 
+
+
+
+
+
+
     return (
         <View style={styles.container}>
-            <MapViewComponent markers={[]} onMarkerPress={handleMarkerPress} />
             <Button title="History Hunt" onPress={handleCreateHunt} />
+            <MapViewComponent markers={[]} onMarkerPress={handleMarkerPress} />
         </View>
     );
 };

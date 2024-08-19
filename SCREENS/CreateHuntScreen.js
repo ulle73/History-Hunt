@@ -9,7 +9,7 @@ const CreateHuntScreen = ({ navigation }) => {
     const handleCreateHunt = () => {
         // Implement create hunt logic here
         if(estimatedTime && title){
-axios.post("https://historyhunt-12cfa-default-rtdb.firebaseio.com/hunts.json", { "title": title, "estimatedTime": estimatedTime})
+//axios.post("https://historyhunt-12cfa-default-rtdb.firebaseio.com/hunts.json", { "title": title, "estimatedTime": estimatedTime})
 navigation.navigate('Invite', {
     title: title,
     estimatedTime: estimatedTime,

@@ -6,6 +6,8 @@ const InviteScreen = ({ navigation, route }) => {
     const { title, estimatedTime } = route.params;
     const [friends, setFriends] = useState([]);
     const [invitedFriends, setInvitedFriends] = useState([]);
+  
+    
 
     useEffect(() => {
         const fetchUsers = async () => {
@@ -74,25 +76,26 @@ const InviteScreen = ({ navigation, route }) => {
 
     const handleFinish = async () => {
         try {
-            const huntResponse = await axios.post('https://historyhunt-12cfa-default-rtdb.firebaseio.com/hunts.json', {
-                title,
-                estimatedTime,
-                invitedFriends,
-            });
+            // const huntResponse = await axios.post('https://historyhunt-12cfa-default-rtdb.firebaseio.com/hunts.json', {
+            //     title,
+            //     estimatedTime,
+            //     invitedFriends,
+                
+            // });
     
-            const huntId = huntResponse.data.name;
+            // const huntId = huntResponse.data.name;
     
-            for (const email of invitedFriends) {
-                const encodedEmail = encodeURIComponent(email);
-                await axios.post(`https://historyhunt-12cfa-default-rtdb.firebaseio.com/activeHunts/${encodedEmail}.json`, {
-                    huntId,
-                    title,
-                });
-            }
+            // for (const email of invitedFriends) {
+            //     const encodedEmail = encodeURIComponent(email);
+            //     await axios.post(`https://historyhunt-12cfa-default-rtdb.firebaseio.com/activeHunts/${encodedEmail}.json`, {
+            //         huntId,
+            //         title,
+            //     });
+            // }
     
             // Navigera till kartan efter att inbjudningarna har skickats
           
-            navigation.navigate('HuntMap', { huntId, title });
+            navigation.navigate('HuntMap', { invitedFriends, title, estimatedTime  });
 
         } catch (error) {
             console.error('Error creating hunt:', error.response?.data || error.message);
