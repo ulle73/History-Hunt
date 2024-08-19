@@ -1,82 +1,107 @@
-import React, {useEffect} from 'react';
-import { View, Text, Button, FlatList, StyleSheet } from 'react-native';
+import React, {useEffect, useState} from 'react';
+import { View, Text, Button, FlatList, StyleSheet, Pressable } from 'react-native';
 import UserAvatar from '../COMPONENTS/UserAvatar';
 import HuntItem from '../COMPONENTS/HuntItem';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from "axios"
 
-
-
 const StartScreen = ({ navigation }) => {
-    const userImage = 'https://cdn-icons-png.flaticon.com/512/17/17004.png'; //ändra till firebasebild
-    const activeHunts = [{ id: '1', title: 'Active Hunt 1' }];
-    const plannedHunts = [{ id: '2', title: 'Planned Hunt 1' }];
-    const completedHunts = [{ id: '3', title: 'Completed Hunt 1' }];
-
+    const [userImage, setUserImage] = useState('https://cdn-icons-png.flaticon.com/512/17/17004.png'); // Ändra till Firebase-bild
+    const [activeHunts, setActiveHunts] = useState([]);
+    const [plannedHunts, setPlannedHunts] = useState([]);
+    const [completedHunts, setCompletedHunts] = useState([]);
+    const [userId, setUserId] = useState(null);
 
     useEffect(() => {
-        const fetchInloggedUser = async () => {
+        const fetchHunts = async () => {
             try {
-
                 const id = await AsyncStorage.getItem('loggedInUser');
-                console.log("loggedinUser:", id)
-
-
-
-
-                const response = await axios.get(`https://historyhunt-12cfa-default-rtdb.firebaseio.com/user/${id}.json`);
-                const userData = response.data;
-
-                console.log(userData)
-
-                // // Omvandla objekt till array
-                // const usersList = Object.keys(usersData).map(key => ({
-                //     email: usersData[key].email,
-                //     username: usersData[key].username,
-                // }));
-
-           
+                setUserId(id);
+    
+                // Hämta användarens data
+                const userResponse = await axios.get(`https://historyhunt-12cfa-default-rtdb.firebaseio.com/user/${id}.json`);
+                const userData = userResponse.data;
+    
+                // Hämta alla hunts från Firebase
+                const huntsResponse = await axios.get('https://historyhunt-12cfa-default-rtdb.firebaseio.com/hunts.json');
+                const huntsData = huntsResponse.data;
+    
+                const active = [];
+                const planned = [];
+                const completed = []; // Här kan du implementera logik för completed hunts
+    
+                // Kategorisera hunts
+                for (const key in huntsData) {
+                    const hunt = huntsData[key];
+                    console.log(`Hunt ID: ${key}, Creator ID: ${hunt.creator}, Logged in User ID: ${id}`);
+                    
+                    if (hunt.creator === id) {
+                        console.log("Adding to planned hunts:", hunt.title);
+                        planned.push({ id: key, ...hunt });
+                    } else if (hunt.invitedFriends && hunt.invitedFriends.includes(userData.email)) {
+                        active.push({ id: key, ...hunt });
+                    }
+                }
+    
+                console.log("Planned Hunts:", planned);
+                setActiveHunts(active);
+                setPlannedHunts(planned);
+                setCompletedHunts(completed);
             } catch (error) {
-                console.error('Error fetching users:', error);
+                console.error('Error fetching hunts:', error);
             }
         };
-
-        fetchInloggedUser();
+    
+        fetchHunts();
     }, []);
 
-    const handleImagePicked = (uri) => {
+    const handleHuntPress = (hunt) => {
+        // Navigera till en detaljerad vy för hunten
+        navigation.navigate('HuntDetail', { hunt });
+    };
 
+    const handleImagePicked = (uri) => {
+        // Hantering av bildbyte
     };
 
     return (
         <View style={styles.container}>
             <UserAvatar uri={userImage} onImagePicked={handleImagePicked} />
+            
             <Text>ANDRA HUNTS DÄR JAG ÄR INBJUDEN</Text>
             <FlatList
                 data={activeHunts}
-                renderItem={({ item }) => <HuntItem title={item.title}  />}
+                renderItem={({ item }) => (
+                    <Pressable onPress={() => handleHuntPress(item)}>
+                        <HuntItem title={item.title} />
+                    </Pressable>
+                )}
                 keyExtractor={(item) => item.id}
             />
+
             <Text>MINA HUNTS</Text>
             <FlatList
                 data={plannedHunts}
-                renderItem={({ item }) => <HuntItem title={item.title} />}
+                renderItem={({ item }) => (
+                    <Pressable onPress={() => handleHuntPress(item)}>
+                        <HuntItem title={item.title} />
+                    </Pressable>
+                )}
                 keyExtractor={(item) => item.id}
             />
-            <Button title="Create Hunt" onPress={() => navigation.navigate('CreateHunt')} />
+
             <Text>Medals</Text>
             <FlatList
                 data={completedHunts}
-                renderItem={({ item }) => <HuntItem title={item.title} />}
+                renderItem={({ item }) => (
+                    <Pressable onPress={() => handleHuntPress(item)}>
+                        <HuntItem title={item.title} />
+                    </Pressable>
+                )}
                 keyExtractor={(item) => item.id}
             />
 
-
-
-
-
-<Button title="JONATAN" onPress={() => navigation.navigate('HuntConfirmation')} />
-<Button title="ADAM" onPress={() => navigation.navigate('InGame')} />
+            <Button title="Create Hunt" onPress={() => navigation.navigate('CreateHunt')} />
         </View>
     );
 };
