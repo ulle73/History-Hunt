@@ -36,6 +36,7 @@ function ImagePicker({ onTakeImage }) {
             allowsEditing: true,
             aspect: [16, 9],
             quality: 0.5,
+            saveToPhotos: true
         });
 
         if (!result.canceled) {
