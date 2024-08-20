@@ -105,7 +105,7 @@ const StartScreen = ({ navigation }) => {
 
             <Button title="Create Hunt" onPress={() => navigation.navigate('CreateHunt')} />
 
-            <Button title="ADAM" onPress={() => navigation.navigate('InGame')} />
+            
         </View>
     );
 };
