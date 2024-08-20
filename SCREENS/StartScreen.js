@@ -53,11 +53,11 @@ const StartScreen = ({ navigation }) => {
         };
     
         fetchHunts();
-    }, [plannedHunts]);
+    }, [plannedHunts, activeHunts, completedHunts]);
 
     const handleHuntPress = (hunt) => {
         // Navigera till en detaljerad vy för hunten
-        navigation.navigate('HuntDetail', { hunt });
+        navigation.navigate('HuntDetail', { hunt, plannedHunts, activeHunts, completedHunts, setActiveHunts, setCompletedHunts});
     };
 
     const handleImagePicked = (uri) => {

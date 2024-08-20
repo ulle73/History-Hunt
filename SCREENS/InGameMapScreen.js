@@ -441,10 +441,10 @@ import {
 const GOOGLE_MAPS_APIKEY = 'AIzaSyCjCPzxEsoRdmj2A5mX7YO_y_yd4H_tVEg';
 
 function InGameMapScreen({ route, navigation }) {
-  const { hunt } = route.params;
+  const { hunt, plannedHunts, activeHunts, completedHunts, setActiveHunts,  setCompletedHunts} = route.params;
   const [selectedMarker, setSelectedMarker] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [activeHunts, setActiveHunts] = useState([]);
+//   const [activeHunts, setActiveHunts] = useState([]);
   const [medals, setMedals] = useState([]);
   const [photos, setPhotos] = useState([]);
 
@@ -490,22 +490,28 @@ function InGameMapScreen({ route, navigation }) {
 
       // Flytta indexhanteringen till efter kamerahanteringen
       setCurrentIndex((prevIndex) => prevIndex + 1);
+      
     }
   };
 
   useEffect(() => {
+    // Testa att useEffect triggas
+    console.log('useEffect Triggered');
+    console.log('Current Index:', currentIndex);
+    console.log('Selected Locations Length:', hunt.locations.selectedLocations.length);
+  
     if (
       currentIndex > 0 &&
       currentIndex === hunt.locations.selectedLocations.length
     ) {
-      // När alla platser har besökts, flytta jakten från active hunts till medals
+      console.log('Navigating to Start Screen');
       removeHuntFromActive();
       addHuntToMedals(hunt);
-
-      // Navigera tillbaka till "Start"-skärmen
       navigation.navigate("Start");
     }
-  }, [currentIndex]); // useEffect triggas när currentIndex uppdateras
+  }, [currentIndex, hunt, navigation]);
+  
+  
 
   const removeHuntFromActive = () => {
     const updatedActiveHunts = activeHunts.filter((h) => h.id !== hunt.id);
@@ -571,7 +577,7 @@ function InGameMapScreen({ route, navigation }) {
         <View style={styles.actions}>
           <Button title="Take Photo" onPress={takeImageHandler} />
           <Text>
-            {photos.length}/{hunt.locations.selectedLocations.length+1} locations
+            {photos.length}/{hunt.locations.selectedLocations.length} locations
             visited
           </Text>
           {photos.map((photo, index) => (

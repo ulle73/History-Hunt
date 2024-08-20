@@ -3,7 +3,7 @@ import { View, Text, Button, StyleSheet } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 
 const HuntDetailScreen = ({ navigation, route }) => {
-    const { hunt } = route.params;
+    const { hunt, completedHunts, plannedHunts, activeHunts } = route.params;
 
     return (
         <View style={styles.container}>
@@ -42,7 +42,7 @@ const HuntDetailScreen = ({ navigation, route }) => {
                 ))}
             </MapView>
 
-            <Button title="Start Hunt" onPress={() => navigation.navigate('InGame', { huntId: hunt.id, hunt })} />
+            <Button title="Start Hunt" onPress={() => navigation.navigate('InGame', { huntId: hunt.id, hunt, plannedHunts, activeHunts, completedHunts})} />
         </View>
     );
 };

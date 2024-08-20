@@ -4,13 +4,16 @@ import { View, Text, Button, StyleSheet } from 'react-native';
 const HuntConfirmationScreen = ({ navigation }) => {
     const handleConfirm = () => {
         // Implement confirm logic here
-        navigation.navigate('HuntMap');
+        navigation.navigate('HuntMap' );
     };
 
     return (
         <View style={styles.container}>
             <Text>Hunt Confirmation</Text>
-            {/* Add details about the hunt here */}
+           
+
+
+
             <Button title="Confirm" onPress={handleConfirm} />
         </View>
     );
