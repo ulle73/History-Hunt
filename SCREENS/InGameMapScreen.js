@@ -525,7 +525,9 @@ function InGameMapScreen({ route, navigation }) {
           longitude: hunt.locations.startLocation.longitude,
           latitudeDelta: 0.05,
           longitudeDelta: 0.05,
+          
         }}
+        showsUserLocation={true} 
       >
         {/* Markör för startplats */}
         <Marker
