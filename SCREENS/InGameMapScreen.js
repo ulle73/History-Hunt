@@ -20,7 +20,7 @@ import axios from "axios"
 const GOOGLE_MAPS_APIKEY = "AIzaSyCjCPzxEsoRdmj2A5mX7YO_y_yd4H_tVEg";
 
 function InGameMapScreen({ route, navigation }) {
-  const { hunt, setActiveHunts, setPlannedHunts, setCompletedHunts , completedHunts, activeHunts, plannedHunts, activeHunts, completedHunts, setActiveHunts,  setCompletedHunts} = route.params;
+  const { hunt, setActiveHunts, setPlannedHunts, setCompletedHunts , completedHunts, activeHunts, plannedHunts} = route.params;
   const [selectedMarker, setSelectedMarker] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
 //   const [activeHunts, setActiveHunts] = useState([]);

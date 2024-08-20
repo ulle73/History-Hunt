@@ -3,7 +3,7 @@ import { View, Text, Button, StyleSheet } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 
 const HuntDetailScreen = ({ navigation, route }) => {
-    const { hunt, completedHunts, plannedHunts, activeHunts, setActiveHunts, setPlannedHunts, setCompletedHunts, completedHunts, activeHunts } = route.params;
+    const { hunt, completedHunts, plannedHunts, activeHunts, setActiveHunts, setPlannedHunts, setCompletedHunts } = route.params;
 
     return (
         <View style={styles.container}>
