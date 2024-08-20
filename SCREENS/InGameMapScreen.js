@@ -539,7 +539,7 @@ function InGameMapScreen({ route, navigation }) {
         <Marker
           coordinate={hunt.locations.endLocation}
           title="End"
-          pinColor="red"
+          pinColor="blue"
           onPress={() => handleMarkerPress(hunt.locations.endLocation)}
         />
 
@@ -569,7 +569,7 @@ function InGameMapScreen({ route, navigation }) {
         <View style={styles.actions}>
           <Button title="Take Photo" onPress={takeImageHandler} />
           <Text>
-            {photos.length}/{hunt.locations.selectedLocations.length} locations
+            {photos.length}/{hunt.locations.selectedLocations.length+1} locations
             visited
           </Text>
           {photos.map((photo, index) => (
