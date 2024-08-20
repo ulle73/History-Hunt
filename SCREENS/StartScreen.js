@@ -6,6 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from "axios"
 
 const StartScreen = ({ navigation }) => {
+    
     const [userImage, setUserImage] = useState('https://cdn-icons-png.flaticon.com/512/17/17004.png'); // Ändra till Firebase-bild
     const [activeHunts, setActiveHunts] = useState([]);
     const [plannedHunts, setPlannedHunts] = useState([]);
@@ -46,18 +47,19 @@ const StartScreen = ({ navigation }) => {
                 //console.log("Planned Hunts:", planned);
                 setActiveHunts(active);
                 setPlannedHunts(planned);
-                setCompletedHunts(completed);
+                // setCompletedHunts(completed);
+              
             } catch (error) {
                 console.error('Error fetching hunts:', error);
             }
         };
     
         fetchHunts();
-    }, [plannedHunts]);
+    }, [plannedHunts, activeHunts]);
 
     const handleHuntPress = (hunt) => {
         // Navigera till en detaljerad vy för hunten
-        navigation.navigate('HuntDetail', { hunt });
+        navigation.navigate('HuntDetail', { hunt, setActiveHunts, setPlannedHunts, setCompletedHunts , completedHunts, activeHunts});
     };
 
     const handleImagePicked = (uri) => {

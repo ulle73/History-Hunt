@@ -15,15 +15,16 @@ import {
   useCameraPermissions,
   PermissionStatus,
 } from "expo-image-picker";
+import axios from "axios"
 
 const GOOGLE_MAPS_APIKEY = "AIzaSyCjCPzxEsoRdmj2A5mX7YO_y_yd4H_tVEg";
 
 function InGameMapScreen({ route, navigation }) {
-  const { hunt } = route.params;
+  const { hunt, setActiveHunts, setPlannedHunts, setCompletedHunts , completedHunts, activeHunts } = route.params;
   const [selectedMarker, setSelectedMarker] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [activeHunts, setActiveHunts] = useState([]);
-  const [medals, setMedals] = useState([]);
+//   const [activeHunts, setActiveHunts] = useState([]);
+//   const [medals, setMedals] = useState([]);
   const [photos, setPhotos] = useState([]);
 
   const [cameraPermissionInformation, requestPermission] =
@@ -31,7 +32,7 @@ function InGameMapScreen({ route, navigation }) {
 
   const handleMarkerPress = (location, index) => {
     setSelectedMarker(location);
-    setCurrentIndex(index);
+    // setCurrentIndex(index);
   };
 
   const verifyPermissions = async () => {
@@ -69,6 +70,7 @@ function InGameMapScreen({ route, navigation }) {
 
       setCurrentIndex((prevIndex) => {
         const newIndex = prevIndex + 1;
+        console.log("prev index", prevIndex)
         console.log(`New Current Index: ${newIndex}`);
 
         if (newIndex === hunt.locations.selectedLocations.length + 1) {
@@ -89,11 +91,12 @@ function InGameMapScreen({ route, navigation }) {
     addHuntToMedals(hunt);
 
     // Navigera tillbaka till Start-skärmen
-    navigation.navigate("Start");
+    navigation.navigate("Start", {setActiveHunts, setCompletedHunts});
   };
 
-  const removeHuntFromActive = () => {
+  const removeHuntFromActive = async () => {
     console.log("Removing hunt from active...");
+    await axios.delete(`https://historyhunt-12cfa-default-rtdb.firebaseio.com/hunts/${hunt.id}.json`);
     const updatedActiveHunts = activeHunts.filter((h) => h.id !== hunt.id);
     setActiveHunts(updatedActiveHunts);
     console.log("Updated active hunts: ", updatedActiveHunts);
@@ -101,8 +104,8 @@ function InGameMapScreen({ route, navigation }) {
 
   const addHuntToMedals = (completedHunt) => {
     console.log("Adding hunt to medals...");
-    setMedals([...medals, completedHunt]);
-    console.log("Updated medals: ", [...medals, completedHunt]);
+    setCompletedHunts([...completedHunts, completedHunt]);
+    console.log("Updated medals: ", [...completedHunts, completedHunt]);
   };
 
   useEffect(() => {
