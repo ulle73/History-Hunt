@@ -1,205 +1,147 @@
-import React, { useState } from 'react';
-import { Alert, View, Image, StyleSheet, Text, Button, ScrollView, TextInput } from "react-native";
-import { launchCameraAsync, useCameraPermissions, PermissionStatus } from "expo-image-picker";
-import MapView, { Marker } from 'react-native-maps';
-import MapViewDirections from 'react-native-maps-directions';
+import React, { useState } from "react";
+import {
+  View,
+  Button,
+  StyleSheet,
+  Text,
+  Image,
+  Alert,
+  ScrollView,
+} from "react-native";
+import MapView, { Marker } from "react-native-maps";
+import MapViewDirections from "react-native-maps-directions";
+import {
+  launchCameraAsync,
+  useCameraPermissions,
+  PermissionStatus,
+} from "expo-image-picker";
 
-// Din Google Maps API-nyckel
-const GOOGLE_MAPS_APIKEY = 'AIzaSyCjCPzxEsoRdmj2A5mX7YO_y_yd4H_tVEg'; 
+const GOOGLE_MAPS_APIKEY = "YOUR_GOOGLE_MAPS_API_KEY";
 
-// ImagePicker-komponenten
-function ImagePicker({ onTakeImage }) {
-    const [pickedImage, setPickedImage] = useState();
-    const [cameraPermissionInformation, requestPermission] = useCameraPermissions();
+function InGameMapScreen({ route, navigation }) {
+  const { hunt } = route.params;
+  const [selectedMarker, setSelectedMarker] = useState(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [photos, setPhotos] = useState([]);
 
-    async function verifyPermissions() {
-        if (cameraPermissionInformation.status === PermissionStatus.UNDETERMINED) {
-            const permissionResponse = await requestPermission();
-            return permissionResponse.granted;
-        }
+  const [cameraPermissionInformation, requestPermission] =
+    useCameraPermissions();
 
-        if (cameraPermissionInformation.status === PermissionStatus.DENIED) {
-            Alert.alert(
-                'Insufficient Permissions!',
-                "You need to grant camera permissions to use this app."
-            );
-            return false;
-        }
+  const handleMarkerPress = (location, index) => {
+    setSelectedMarker(location);
+    setCurrentIndex(index);
+  };
 
-        return true;
+  const verifyPermissions = async () => {
+    if (cameraPermissionInformation.status === PermissionStatus.UNDETERMINED) {
+      const permissionResponse = await requestPermission();
+      return permissionResponse.granted;
     }
 
-    async function takeImageHandler() {
-        const hasPermission = await verifyPermissions();
-
-        if (!hasPermission) {
-            return;
-        }
-
-        const result = await launchCameraAsync({
-            allowsEditing: true,
-            aspect: [16, 9],
-            quality: 0.5,
-            saveToPhotos: true
-        });
-
-        if (!result.canceled) {
-            const imageUri = result.assets[0].uri; // Hämta URI från första objektet i assets-arrayen
-            setPickedImage(imageUri);
-            onTakeImage(imageUri);
-        }
+    if (cameraPermissionInformation.status === PermissionStatus.DENIED) {
+      Alert.alert(
+        "Insufficient Permissions!",
+        "You need to grant camera permissions to use this app."
+      );
+      return false;
     }
 
-    let imagePreview = <Text>No image taken.</Text>;
+    return true;
+  };
 
-    if (pickedImage) {
-        imagePreview = <Image style={styles.image} source={{ uri: pickedImage }} />;
+  const takeImageHandler = async () => {
+    const hasPermission = await verifyPermissions();
+    if (!hasPermission) {
+      return;
     }
 
-    return (
-        <View>
-            <View style={styles.imagePreview}>
-                {imagePreview}
-            </View>
-            <Button title="Take Image" onPress={takeImageHandler} />
+    const result = await launchCameraAsync({
+      allowsEditing: true,
+      aspect: [16, 9],
+      quality: 0.5,
+    });
+
+    if (!result.canceled) {
+      setPhotos([...photos, result.assets[0].uri]);
+      if (currentIndex + 1 === hunt.locations.selectedLocations.length) {
+        navigation.navigate("Start");
+        // Remove hunt from active hunts and move to medals
+      } else {
+        setSelectedMarker(null);
+      }
+    }
+  };
+
+  return (
+    <ScrollView style={styles.form}>
+      <MapView
+        style={styles.map}
+        initialRegion={{
+          latitude: hunt.locations.startLocation.latitude,
+          longitude: hunt.locations.startLocation.longitude,
+          latitudeDelta: 0.05,
+          longitudeDelta: 0.05,
+        }}
+      >
+        {hunt.locations.selectedLocations.map((location, index) => (
+          <Marker
+            key={index}
+            coordinate={location}
+            title={`Location ${index + 1}`}
+            onPress={() => handleMarkerPress(location, index)}
+          />
+        ))}
+
+        {selectedMarker && (
+          <MapViewDirections
+            origin={hunt.locations.startLocation}
+            destination={selectedMarker}
+            apikey={GOOGLE_MAPS_APIKEY}
+            strokeWidth={5}
+            strokeColor="blue"
+          />
+        )}
+      </MapView>
+
+      {selectedMarker && (
+        <View style={styles.actions}>
+          <Button title="Take Photo" onPress={takeImageHandler} />
+          <Text>
+            {photos.length}/{hunt.locations.selectedLocations.length} locations
+            visited
+          </Text>
+          {photos.map((photo, index) => (
+            <Image
+              key={index}
+              source={{ uri: photo }}
+              style={styles.previewImage}
+            />
+          ))}
         </View>
-    );
+      )}
+    </ScrollView>
+  );
 }
-
-// InGameMapScreen-komponenten
-function InGameMapScreen({ route }) {
-    const { hunt } = route.params;
-    const [enteredTitle, setEnteredTitle] = useState('');
-    const [selectedImage, setSelectedImage] = useState('');
-    const [selectedMarker, setSelectedMarker] = useState(null);
-
-    function changeTitleHandler(enteredText) {
-        setEnteredTitle(enteredText);
-    }
-
-    function handleMarkerPress(location) {
-        setSelectedMarker(location);
-    }
-
-    function handleTakeImage(imageUri) {
-        setSelectedImage(imageUri);
-    }
-
-    return (
-        <ScrollView style={styles.form}>
-            <View>
-                <Text style={styles.label}>Title</Text>
-                <TextInput 
-                    onChangeText={changeTitleHandler} 
-                    value={enteredTitle} 
-                    style={styles.input} 
-                />
-            </View>
-
-            <MapView
-                style={styles.map}
-                initialRegion={{
-                    latitude: hunt.locations.startLocation.latitude,
-                    longitude: hunt.locations.startLocation.longitude,
-                    latitudeDelta: 0.05,
-                    longitudeDelta: 0.05,
-                }}
-            >
-                {/* Markör för startplats */}
-                <Marker
-                    coordinate={hunt.locations.startLocation}
-                    title="Start"
-                    pinColor="green"
-                    onPress={() => handleMarkerPress(hunt.locations.startLocation)}
-                />
-                
-                {/* Markör för slutplats */}
-                <Marker
-                    coordinate={hunt.locations.endLocation}
-                    title="End"
-                    pinColor="red"
-                    onPress={() => handleMarkerPress(hunt.locations.endLocation)}
-                />
-
-                {/* Markörer för andra platser */}
-                {hunt.locations.selectedLocations.map((location, index) => (
-                    <Marker
-                        key={index}
-                        coordinate={location}
-                        title={`Point ${index + 1}`}
-                        onPress={() => handleMarkerPress(location)}
-                    />
-                ))}
-
-                {/* Rutt */}
-                {selectedMarker && (
-                    <MapViewDirections
-                        origin={hunt.locations.startLocation}
-                        destination={selectedMarker}
-                        apikey={GOOGLE_MAPS_APIKEY}
-                        strokeWidth={5}
-                        strokeColor="blue"
-                    />
-                )}
-            </MapView>
-
-            {/* Lägg till ImagePicker-komponenten */}
-            <ImagePicker onTakeImage={handleTakeImage} />
-
-            {/* Visa vald bild om det finns en */}
-            {selectedImage ? (
-                <Image source={{ uri: selectedImage }} style={styles.selectedImage} />
-            ) : (
-                <Text>No image selected.</Text>
-            )}
-
-            <Button title="Add Place" onPress={() => {}} />
-        </ScrollView>
-    );
-}
-
-export default InGameMapScreen;
 
 const styles = StyleSheet.create({
-    form: {
-        flex: 1,
-        padding: 24
-    },
-    label: {
-        fontWeight: 'bold',
-        marginBottom: 4,
-        color: '#333',
-    },
-    input: {
-        marginVertical: 8,
-        paddingHorizontal: 4,
-        paddingVertical: 8,
-        fontSize: 16,
-        borderBottomWidth: 2,
-        borderBottomColor: '#ccc',
-        color: '#333',
-    },
-    imagePreview: {
-        width: '100%',
-        height: 200,
-        marginVertical: 8,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#f0f0f0',
-        borderRadius: 4,
-    },
-    image: {
-        width: '100%',
-        height: '100%',
-    },
-    map: {
-        width: '100%',
-        height: 400,
-        marginVertical: 16,
-    },
-    selectedImage: {
-        width: '100%',
-        height: 200,
-        marginVertical: 8,
-    },
+  form: {
+    flex: 1,
+    padding: 24,
+  },
+  map: {
+    width: "100%",
+    height: 400,
+    marginVertical: 16,
+  },
+  actions: {
+    marginVertical: 16,
+    alignItems: "center",
+  },
+  previewImage: {
+    width: "100%",
+    height: 200,
+    marginTop: 16,
+  },
 });
+
+export default InGameMapScreen;
