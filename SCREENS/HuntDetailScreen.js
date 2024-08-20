@@ -7,7 +7,7 @@ const HuntDetailScreen = ({ navigation, route }) => {
 
     return (
         <View style={styles.container}>
-            <Text>Hunt Details for {hunt.id}</Text>
+            <Text>Hunt Details for hunt {hunt.id}</Text>
             
             <MapView
                 style={styles.map}
@@ -29,7 +29,7 @@ const HuntDetailScreen = ({ navigation, route }) => {
                 <Marker
                     coordinate={hunt.locations.endLocation}
                     title="End"
-                    pinColor="red"
+                    pinColor="blue"
                 />
 
                 {/* Markörer för andra platser */}
