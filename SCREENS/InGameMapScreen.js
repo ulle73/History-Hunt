@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Alert, View, Image, StyleSheet, Text, Button, ScrollView, TextInput } from "react-native";
 import { launchCameraAsync, useCameraPermissions, PermissionStatus } from "expo-image-picker";
+import * as MediaLibrary from 'expo-media-library';
 import MapView, { Marker } from 'react-native-maps';
 import MapViewDirections from 'react-native-maps-directions';
 
@@ -10,18 +11,44 @@ const GOOGLE_MAPS_APIKEY = 'AIzaSyCjCPzxEsoRdmj2A5mX7YO_y_yd4H_tVEg';
 // ImagePicker-komponenten
 function ImagePicker({ onTakeImage }) {
     const [pickedImage, setPickedImage] = useState();
-    const [cameraPermissionInformation, requestPermission] = useCameraPermissions();
+    const [cameraPermissionInformation, requestCameraPermission] = useCameraPermissions();
+    const [mediaPermissionInformation, requestMediaPermission] = MediaLibrary.usePermissions();
 
     async function verifyPermissions() {
+        // Kontrollera kamerabehörigheter
         if (cameraPermissionInformation.status === PermissionStatus.UNDETERMINED) {
-            const permissionResponse = await requestPermission();
-            return permissionResponse.granted;
+            const permissionResponse = await requestCameraPermission();
+            if (!permissionResponse.granted) {
+                Alert.alert(
+                    'Insufficient Permissions!',
+                    'You need to grant camera permissions to use this app.'
+                );
+                return false;
+            }
         }
-
         if (cameraPermissionInformation.status === PermissionStatus.DENIED) {
             Alert.alert(
                 'Insufficient Permissions!',
-                "You need to grant camera permissions to use this app."
+                'You need to grant camera permissions to use this app.'
+            );
+            return false;
+        }
+
+        // Kontrollera media bibliotek behörigheter
+        if (mediaPermissionInformation.status === PermissionStatus.UNDETERMINED) {
+            const permissionResponse = await requestMediaPermission();
+            if (!permissionResponse.granted) {
+                Alert.alert(
+                    'Insufficient Permissions!',
+                    'You need to grant media library permissions to save photos.'
+                );
+                return false;
+            }
+        }
+        if (mediaPermissionInformation.status === PermissionStatus.DENIED) {
+            Alert.alert(
+                'Insufficient Permissions!',
+                'You need to grant media library permissions to save photos.'
             );
             return false;
         }
@@ -47,6 +74,14 @@ function ImagePicker({ onTakeImage }) {
             const imageUri = result.assets[0].uri; // Hämta URI från första objektet i assets-arrayen
             setPickedImage(imageUri);
             onTakeImage(imageUri);
+
+            // Spara bilden till media library
+            try {
+                const asset = await MediaLibrary.createAssetAsync(imageUri);
+                console.log('Image saved to media library:', asset);
+            } catch (error) {
+                console.error('Error saving image to media library:', error);
+            }
         }
     }
 
