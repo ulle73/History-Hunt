@@ -345,7 +345,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Location from 'expo-location'; // Lägg till denna import för att använda GPS
 
 const HuntMapScreen = ({ navigation, route }) => {
-    const { title, estimatedTime, invitedFriends } = route.params;
+    const { title, estimatedTime, invitedFriends, image } = route.params;
     const [selectedLocations, setSelectedLocations] = useState([]);
     const [startLocation, setStartLocation] = useState(null);
     const [endLocation, setEndLocation] = useState(null);
@@ -391,12 +391,14 @@ const HuntMapScreen = ({ navigation, route }) => {
 
         try {
             const id = await AsyncStorage.getItem('loggedInUser');
+           
             const response = await axios.post('https://historyhunt-12cfa-default-rtdb.firebaseio.com/hunts.json', {
                 title,
                 estimatedTime,
                 invitedFriends,
                 locations: { startLocation, endLocation, selectedLocations },
-                creator: id
+                creator: id,
+                image
             });
 
             navigation.navigate('Start');

@@ -3,7 +3,7 @@ import { View, Button, StyleSheet, FlatList, Text, TouchableOpacity } from 'reac
 import axios from 'axios';
 
 const InviteScreen = ({ navigation, route }) => {
-    const { title, estimatedTime } = route.params;
+    const { title, estimatedTime, image } = route.params;
     const [friends, setFriends] = useState([]);
     const [invitedFriends, setInvitedFriends] = useState([]);
   
@@ -14,13 +14,16 @@ const InviteScreen = ({ navigation, route }) => {
             try {
                 const response = await axios.get('https://historyhunt-12cfa-default-rtdb.firebaseio.com/user.json');
                 const usersData = response.data;
+            
 
                 // Omvandla objekt till array
                 const usersList = Object.keys(usersData).map(key => ({
                     email: usersData[key].email,
                     username: usersData[key].username,
+                
+                    
                 }));
-
+                console.log("JONAS",usersList)
                 setFriends(usersList);
             } catch (error) {
                 console.error('Error fetching users:', error);
@@ -95,7 +98,7 @@ const InviteScreen = ({ navigation, route }) => {
     
             // Navigera till kartan efter att inbjudningarna har skickats
           
-            navigation.navigate('HuntMap', { invitedFriends, title, estimatedTime  });
+            navigation.navigate('HuntMap', { invitedFriends, title, estimatedTime, image  });
 
         } catch (error) {
             console.error('Error creating hunt:', error.response?.data || error.message);

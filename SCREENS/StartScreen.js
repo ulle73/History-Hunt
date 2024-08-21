@@ -236,6 +236,7 @@ const StartScreen = ({ navigation }) => {
                 renderItem={({ item }) => (
                     <Pressable onPress={() => handleHuntPress(item)}>
                         <HuntItem title={item.title} />
+                        <Medals uri={item.image}  />
                     </Pressable>
                 )}
                 keyExtractor={(item) => item.id}
@@ -246,7 +247,11 @@ const StartScreen = ({ navigation }) => {
                 data={plannedHunts}
                 renderItem={({ item }) => (
                     <Pressable onPress={() => handleHuntPress(item)}>
-                        <HuntItem title={item.title} />
+                        <HuntItem title={item.title}
+                     />
+                     
+                      <Medals uri={item.image}  />
+                     
                     </Pressable>
                 )}
                 keyExtractor={(item) => item.id}
