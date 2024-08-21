@@ -212,21 +212,32 @@ const takeImageHandler = async () => {
 const finishHunt = () => {
     console.log("Finishing hunt...");
 
-    // Flytta jakten från activeHunts till medals
+    // Flytta jakten från activeHunts till completedHunts
     removeHuntFromActive();
-    addHuntToMedals(hunt);
+    addHuntToCompleted(hunt);
 
     // Navigera tillbaka till Start-skärmen
     navigation.navigate("Start", { setActiveHunts, setCompletedHunts });
 };
 
-const removeHuntFromActive = async () => {
+
+const removeHuntFromActive = () => {
     console.log("Removing hunt from active...");
-    await axios.delete(`https://historyhunt-12cfa-default-rtdb.firebaseio.com/hunts/${hunt.id}.json`);
     const updatedActiveHunts = activeHunts.filter((h) => h.id !== hunt.id);
     setActiveHunts(updatedActiveHunts);
     console.log("Updated active hunts: ", updatedActiveHunts);
 };
+
+const addHuntToCompleted = (completedHunt) => {
+    console.log("Adding hunt to completed...");
+    
+    // Inkludera bilderna i det slutförda hunt-objektet
+    const huntWithPhotos = { ...completedHunt, photos };
+    
+    setCompletedHunts([...completedHunts, huntWithPhotos]);
+    console.log("Updated completed hunts: ", [...completedHunts, huntWithPhotos]);
+};
+
 
 const addHuntToMedals = (completedHunt) => {
     console.log("Adding hunt to medals...");
