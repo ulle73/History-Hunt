@@ -132,6 +132,7 @@ import React, { useCallback, useState } from 'react';
 import { View, Text, Button, FlatList, StyleSheet, Pressable } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native'; // Importera useFocusEffect
 import UserAvatar from '../COMPONENTS/UserAvatar';
+import Medals from '../COMPONENTS/Medals';
 import HuntItem from '../COMPONENTS/HuntItem';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
@@ -228,6 +229,7 @@ const StartScreen = ({ navigation }) => {
                 renderItem={({ item }) => (
                     <Pressable onPress={() => handleHuntPress(item)}>
                         <HuntItem title={item.title} />
+                        <Medals title={item.title}></Medals>
                     </Pressable>
                 )}
                 keyExtractor={(item) => item.id}
