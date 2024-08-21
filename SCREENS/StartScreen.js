@@ -136,6 +136,7 @@ import Medals from '../COMPONENTS/Medals';
 import HuntItem from '../COMPONENTS/HuntItem';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import * as ImagePicker from "expo-image-picker"
 
 const StartScreen = ({ navigation }) => {
     const [userImage, setUserImage] = useState('https://cdn-icons-png.flaticon.com/512/17/17004.png'); // Ändra till Firebase-bild
@@ -188,14 +189,42 @@ const StartScreen = ({ navigation }) => {
         }, [])
     );
 
+
+
+    const handleImagePicked = async () => {
+        try {
+            // Begär åtkomst till mediebiblioteket
+            const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+            if (status !== 'granted') {
+                Alert.alert('Sorry, we need camera roll permissions to make this work!');
+                return;
+            }
+
+            // Öppna bildgalleri
+            let result = await ImagePicker.launchImageLibraryAsync({
+                mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                allowsEditing: true,
+                aspect: [4, 3],
+                quality: 1,
+            });
+
+            if (!result.canceled) {
+                const uri = result.assets[0].uri;
+
+                // Hantera bildändring (exempelvis uppdatera lokal state)
+                setUserImage(uri);
+            }
+        } catch (error) {
+            console.error('Error picking image:', error);
+        }
+    };
+
     const handleHuntPress = (hunt) => {
         // Navigera till en detaljerad vy för hunten
         navigation.navigate('HuntDetail', { hunt, setActiveHunts, setPlannedHunts, setCompletedHunts, completedHunts, activeHunts });
     };
 
-    const handleImagePicked = (uri) => {
-        // Hantering av bildbyte
-    };
+    
 
     return (
         <View style={styles.container}>
