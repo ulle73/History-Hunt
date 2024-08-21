@@ -214,7 +214,7 @@ const finishHunt = () => {
 
     // Flytta jakten från activeHunts till medals
     removeHuntFromActive();
-    addHuntToMedals(hunt);
+    addHuntToCompleted(hunt);
 
     // Navigera tillbaka till Start-skärmen
     navigation.navigate("Start", { setActiveHunts, setCompletedHunts });
@@ -222,16 +222,30 @@ const finishHunt = () => {
 
 const removeHuntFromActive = async () => {
     console.log("Removing hunt from active...");
-    await axios.delete(`https://historyhunt-12cfa-default-rtdb.firebaseio.com/hunts/${hunt.id}.json`);
-    const updatedActiveHunts = activeHunts.filter((h) => h.id !== hunt.id);
-    setActiveHunts(updatedActiveHunts);
-    console.log("Updated active hunts: ", updatedActiveHunts);
+
+
+    setTimeout(async () => {
+        await axios.delete(`https://historyhunt-12cfa-default-rtdb.firebaseio.com/hunts/${hunt.id}.json`);
+        const updatedActiveHunts = activeHunts.filter((h) => h.id !== hunt.id);
+        setActiveHunts(updatedActiveHunts);
+        console.log("Updated active hunts: ", updatedActiveHunts);
+    }, 100);
+    
+    
+   
 };
 
-const addHuntToMedals = (completedHunt) => {
-    console.log("Adding hunt to medals...");
-    setCompletedHunts([...completedHunts, completedHunt]);
-    console.log("Updated medals: ", [...completedHunts, completedHunt]);
+// const addHuntToMedals = (completedHunt) => {
+//     console.log("Adding hunt to medals...");
+//     setCompletedHunts([...completedHunts, completedHunt]);
+//     console.log("Updated medals: ", [...completedHunts, completedHunt]);
+// };
+
+const addHuntToCompleted = (completedHunt) => {
+    console.log("Adding hunt to completed hunts...");
+    // setCompletedHunts((prevCompletedHunts) => [...prevCompletedHunts, completedHunt]);
+       setCompletedHunts((prevCompletedHunts) => [...prevCompletedHunts, completedHunt]);
+    // console.log("Updated completed hunts: ", [...completedHunts, completedHunt]);
 };
 
 useEffect(() => {

@@ -227,50 +227,100 @@ const StartScreen = ({ navigation }) => {
     
 
     return (
+        // <View style={styles.container}>
+        //     <UserAvatar uri={userImage} onImagePicked={handleImagePicked} />
+
+        //     <Text>ANDRA HUNTS DÄR JAG ÄR INBJUDEN</Text>
+        //     <FlatList
+        //         data={activeHunts}
+        //         renderItem={({ item }) => (
+        //             <Pressable onPress={() => handleHuntPress(item)}>
+        //                 <HuntItem title={item.title} />
+        //                 <Medals uri={item.image}  />
+        //             </Pressable>
+        //         )}
+        //         keyExtractor={(item) => item.id}
+        //     />
+
+        //     <Text>MINA HUNTS</Text>
+        //     <FlatList
+        //         data={plannedHunts}
+        //         renderItem={({ item }) => (
+        //             <Pressable onPress={() => handleHuntPress(item)}>
+        //                 <HuntItem title={item.title}
+        //              />
+                     
+        //               <Medals uri={item.image}  />
+                     
+        //             </Pressable>
+        //         )}
+        //         keyExtractor={(item) => item.id}
+        //     />
+
+        //     <Text>Completed Hunts</Text>
+        //     <FlatList
+        //         data={completedHunts}
+        //         renderItem={({ item }) => (
+        //             <Pressable onPress={() => handleHuntPress(item)}>
+        //                 <HuntItem title={item.title} />
+        //                 <Medals title={item.image}></Medals>
+        //             </Pressable>
+        //         )}
+        //         keyExtractor={(item) => item.id}
+        //     />
+
+        //     <Button title="Create Hunt" onPress={() => navigation.navigate('CreateHunt')} />
+        // </View>
+
+
         <View style={styles.container}>
-            <UserAvatar uri={userImage} onImagePicked={handleImagePicked} />
+        <UserAvatar uri={userImage} onImagePicked={handleImagePicked} />
 
-            <Text>ANDRA HUNTS DÄR JAG ÄR INBJUDEN</Text>
-            <FlatList
-                data={activeHunts}
-                renderItem={({ item }) => (
-                    <Pressable onPress={() => handleHuntPress(item)}>
-                        <HuntItem title={item.title} />
-                        <Medals uri={item.image}  />
-                    </Pressable>
-                )}
-                keyExtractor={(item) => item.id}
-            />
+        <Text>ANDRA HUNTS DÄR JAG ÄR INBJUDEN</Text>
+        <FlatList
+            data={activeHunts}
+            renderItem={({ item }) => (
+                <Pressable onPress={() => handleHuntPress(item)}>
+                    <HuntItem title={item.title} />
+                    <Medals uri={item.image} />
+                </Pressable>
+            )}
+            keyExtractor={(item) => item.id}
+        />
 
-            <Text>MINA HUNTS</Text>
-            <FlatList
-                data={plannedHunts}
-                renderItem={({ item }) => (
-                    <Pressable onPress={() => handleHuntPress(item)}>
-                        <HuntItem title={item.title}
-                     />
-                     
-                      <Medals uri={item.image}  />
-                     
-                    </Pressable>
-                )}
-                keyExtractor={(item) => item.id}
-            />
+        <Text>MINA HUNTS</Text>
+        <FlatList
+            data={plannedHunts}
+            renderItem={({ item }) => (
+                <Pressable onPress={() => handleHuntPress(item)}>
+                    <HuntItem title={item.title} />
+                    <Medals uri={item.image} />
+                </Pressable>
+            )}
+            keyExtractor={(item) => item.id}
+        />
 
-            <Text>Completed Hunts</Text>
-            <FlatList
-                data={completedHunts}
-                renderItem={({ item }) => (
-                    <Pressable onPress={() => handleHuntPress(item)}>
-                        <HuntItem title={item.title} />
-                        <Medals title={item.title}></Medals>
-                    </Pressable>
-                )}
-                keyExtractor={(item) => item.id}
-            />
+        <Text>Completed Hunts</Text>
+        <FlatList
+    data={completedHunts.reduce((uniqueHunts, hunt) => {
+        const isDuplicate = uniqueHunts.some(item => item.title === hunt.title);
+        if (!isDuplicate) {
+            uniqueHunts.push(hunt);
+        }
+        return uniqueHunts;
+    }, [])}
+    renderItem={({ item }) => (
+        <Pressable onPress={() => handleHuntPress(item)}>
+            <HuntItem title={item.title} />
+            <Medals uri={item.image} />
+        </Pressable>
+    )}
+    keyExtractor={(item) => item.id}
+/>
 
-            <Button title="Create Hunt" onPress={() => navigation.navigate('CreateHunt')} />
-        </View>
+
+        <Button title="Create Hunt" onPress={() => navigation.navigate('CreateHunt')} />
+    </View>
     );
 };
 
