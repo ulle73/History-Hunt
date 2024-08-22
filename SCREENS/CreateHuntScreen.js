@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { View, TextInput, Button, StyleSheet, Alert, Image, Text } from 'react-native';
+import { View, TextInput, StyleSheet, Alert, Image, Text, TouchableOpacity  } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import axios from 'axios';
 import {  ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { storage} from "../firebase/firebaseConfig"
+import Button from '../COMPONENTS/Button'
 
 
 const CreateHuntScreen = ({ navigation }) => {
@@ -108,29 +109,34 @@ const CreateHuntScreen = ({ navigation }) => {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.label}>Titel på Hunt</Text>
+            <Text style={styles.title}>Customize Hunt</Text>
+
+            <Text style={styles.subtitle}>Duration of the hunt</Text>
             <TextInput
                 style={styles.input}
-                placeholder="Ange titel för hunt"
-                value={title}
-                onChangeText={setTitle}
-            />
-            <Text style={styles.label}>Beräknad tid</Text>
-            <TextInput
-                style={styles.input}
-                placeholder="Ange beräknad tid"
+                placeholder="3 hours? 2 days?"
                 value={estimatedTime}
                 onChangeText={setEstimatedTime}
                 keyboardType="numeric"
             />
-            <Button title="Välj bild" onPress={handleImagePicked} />
-            {image && (
-                <>
-                    <Text style={styles.label}>Vald bild:</Text>
+
+            <Text style={styles.subtitle}>Name of the hunt</Text>
+            <TextInput
+                style={styles.input}
+                placeholder="Name"
+                value={title}
+                onChangeText={setTitle}
+            />
+
+            <TouchableOpacity style={styles.imagePicker} onPress={handleImagePicked}>
+                {image ? (
                     <Image source={{ uri: image }} style={styles.imagePreview} />
-                </>
-            )}
-            <Button title="Fortsätt" onPress={handleCreateHunt} />
+                ) : (
+                    <Text style={styles.imagePlaceholderText}>insert image</Text>
+                )}
+            </TouchableOpacity>
+
+            <Button title="Continue" onPress={handleCreateHunt} />
         </View>
     );
 };
@@ -139,24 +145,50 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
+        alignItems: 'center',
         padding: 16,
     },
-    label: {
-        fontSize: 16,
-        marginBottom: 8,
+    title: {
+        fontSize: 32,
         fontWeight: 'bold',
+        marginBottom: 20,
+    },
+    subtitle: {
+        fontSize: 18,
+        color: '#a65fec',
+       
+        marginBottom: 8,
+        textAlign: 'center',
+        alignItems: 'center'
     },
     input: {
-        height: 40,
+        width: '100%',
+        height: 50,
         borderColor: '#ccc',
         borderWidth: 1,
         marginBottom: 12,
         paddingHorizontal: 8,
+        borderRadius: 8,
+        textAlign: 'center',
+    },
+    imagePicker: {
+        width: 200,
+        height: 200,
+        borderRadius: 100,
+        borderWidth: 2,
+        borderColor: '#ccc',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginBottom: 20,
+        marginTop: 20,
+    },
+    imagePlaceholderText: {
+        color: '#ff00ff',
     },
     imagePreview: {
-        width: '100%',
+        width: 200,
         height: 200,
-        marginTop: 10,
+        borderRadius: 100,
     },
 });
 

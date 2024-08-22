@@ -1,7 +1,8 @@
 import React , {useState} from 'react';
-import { View, TextInput, Button, StyleSheet } from 'react-native';
+import { View, TextInput, StyleSheet } from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Button from  "../COMPONENTS/Button"
 
 const LoginScreen = ({ navigation }) => {
     const [email, setEmail] = useState('');
@@ -59,8 +60,10 @@ await AsyncStorage.setItem(
                 onChangeText={setPassword}
                 secureTextEntry
             />
+            <View style={styles.butt}>
             <Button title="Login" onPress={handleLogin} />
             <Button title="Sign up here" onPress={() => navigation.navigate('Signup')} />
+            </View>
         </View>
     );
 };
@@ -70,6 +73,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         padding: 16,
+      
     },
     input: {
         height: 40,
@@ -77,7 +81,11 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         marginBottom: 12,
         paddingHorizontal: 8,
+        
     },
+    butt:{
+        alignItems:'center'
+    }
 });
 
 export default LoginScreen

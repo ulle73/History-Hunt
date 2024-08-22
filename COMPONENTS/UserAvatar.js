@@ -27,17 +27,25 @@ const UserAvatar = ({ uri, onImagePicked }) => {
 
 const styles = StyleSheet.create({
     avatarContainer: {
-        width: 100,
-        height: 100,
-        borderRadius: 50,
+        width: 150,
+        height: 150,
+        borderRadius: 75,
         overflow: 'hidden',
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: '#ccc',
+        borderWidth: 5,               // Borderns tjocklek
+        borderColor: '#ee00ee7e'
+      
+      
     },
     avatar: {
-        width: '100%',
-        height: '100%',
+        width: 150,
+        height: 150,
+        borderRadius: 75,
+        
+       
+     
     },
 });
 

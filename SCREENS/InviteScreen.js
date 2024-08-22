@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { View, Button, StyleSheet, FlatList, Text, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, FlatList, Text, TouchableOpacity } from 'react-native';
 import axios from 'axios';
-
+import Button from '../COMPONENTS/Button'
 const InviteScreen = ({ navigation, route }) => {
     const { title, estimatedTime, image } = route.params;
     const [friends, setFriends] = useState([]);
@@ -42,35 +42,7 @@ const InviteScreen = ({ navigation, route }) => {
     };
     
 
-    // const handleFinish = async () => {
-    //     try {
-    //         // Kontrollera vad som skickas
-    //         console.log({
-    //             title,
-    //             estimatedTime,
-    //             invitedFriends,
-    //         });
-    
-    //         const huntResponse = await axios.post('https://historyhunt-12cfa-default-rtdb.firebaseio.com/hunts.json', {
-    //             title,
-    //             estimatedTime,
-    //             invitedFriends,
-    //         });
-    
-    //         const huntId = huntResponse.data.name;
-    
-    //         for (const email of invitedFriends) {
-    //             await axios.post(`https://historyhunt-12cfa-default-rtdb.firebaseio.com/activeHunts/${email}.json`, {
-    //                 huntId,
-    //                 title,
-    //             });
-    //         }
-    
-    //         navigation.navigate('Start');
-    //     } catch (error) {
-    //         console.error('Error creating hunt:', error.response?.data || error.message);
-    //     }
-    // };
+   
     
 
 
@@ -79,24 +51,7 @@ const InviteScreen = ({ navigation, route }) => {
 
     const handleFinish = async () => {
         try {
-            // const huntResponse = await axios.post('https://historyhunt-12cfa-default-rtdb.firebaseio.com/hunts.json', {
-            //     title,
-            //     estimatedTime,
-            //     invitedFriends,
-                
-            // });
-    
-            // const huntId = huntResponse.data.name;
-    
-            // for (const email of invitedFriends) {
-            //     const encodedEmail = encodeURIComponent(email);
-            //     await axios.post(`https://historyhunt-12cfa-default-rtdb.firebaseio.com/activeHunts/${encodedEmail}.json`, {
-            //         huntId,
-            //         title,
-            //     });
-            // }
-    
-            // Navigera till kartan efter att inbjudningarna har skickats
+      
           
             navigation.navigate('HuntMap', { invitedFriends, title, estimatedTime, image  });
 
@@ -109,18 +64,32 @@ const InviteScreen = ({ navigation, route }) => {
 
     return (
         <View style={styles.container}>
-           <FlatList
-    data={friends}
-    keyExtractor={(item) => item.email}
-    renderItem={({ item }) => (
-        <TouchableOpacity onPress={() => handleInvite(item.email)} style={styles.friendItem}>
-            <Text style={{ fontWeight: invitedFriends.includes(item.email) ? 'bold' : 'normal' }}>
-                {item.username}
-            </Text>
-        </TouchableOpacity>
-    )}
-/>
-            <Button title="Invite" onPress={handleFinish} />
+            <FlatList
+                data={friends}
+                keyExtractor={(item) => item.email}
+                renderItem={({ item }) => (
+                    <TouchableOpacity
+                        onPress={() => handleInvite(item.email)}
+                        style={[
+                            styles.friendItem,
+                            invitedFriends.includes(item.email) && styles.selectedFriendItem
+                        ]}
+                    >
+                        <Text
+                            style={[
+                                styles.friendText,
+                                invitedFriends.includes(item.email) && styles.selectedFriendText
+                            ]}
+                        >
+                            {item.username}
+                        </Text>
+                    </TouchableOpacity>
+                )}
+                contentContainerStyle={styles.listContent}
+            />
+            <View style={styles.buttonContainer}>
+                <Button title="Invite" onPress={handleFinish} />
+            </View>
         </View>
     );
 };
@@ -128,12 +97,46 @@ const InviteScreen = ({ navigation, route }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 16,
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 20,
+        backgroundColor: '#f7f7f7',
+        paddingBottom: 50
+    },
+    listContent: {
+        width: '100%',
+        paddingVertical: 20,
+        alignItems: 'center',
     },
     friendItem: {
-        padding: 10,
-        borderBottomWidth: 1,
-        borderBottomColor: '#ccc',
+        padding: 20,
+        marginVertical: 10,
+        backgroundColor: '#fff',
+        borderRadius: 50, 
+        shadowColor: '#000',
+        shadowOpacity: 0.1,
+        shadowOffset: { width: 0, height: 2 },
+        shadowRadius: 4,
+        elevation: 2,
+        width: 80,
+        height: 80,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    selectedFriendItem: {
+        backgroundColor: '#0bc411', 
+    },
+    friendText: {
+        color: '#333',
+        textAlign: 'center',
+    },
+    selectedFriendText: {
+        color: '#fff', 
+    },
+    buttonContainer: {
+        marginTop: 20,
+        width: '100%',
+        alignItems: 'center',
     },
 });
 

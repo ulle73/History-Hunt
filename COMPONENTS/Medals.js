@@ -27,17 +27,19 @@ const Medals = ({ uri, onImagePicked }) => {
 
 const styles = StyleSheet.create({
     avatarContainer: {
-        width: 100,
-        height: 100,
-        borderRadius: 50,
+        width: 40,
+        height: 40,
+        borderRadius: 20,
         overflow: 'hidden',
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: '#ccc',
+         
     },
     avatar: {
         width: '100%',
         height: '100%',
+          
     },
 });
 

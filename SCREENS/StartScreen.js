@@ -139,20 +139,25 @@ import axios from 'axios';
 import * as ImagePicker from "expo-image-picker"
 
 const StartScreen = ({ navigation }) => {
-    const [userImage, setUserImage] = useState('https://cdn-icons-png.flaticon.com/512/17/17004.png'); // Ändra till Firebase-bild
+    const [userImage, setUserImage] = useState(); // Ändra till Firebase-bild
     const [activeHunts, setActiveHunts] = useState([]);
     const [plannedHunts, setPlannedHunts] = useState([]);
     const [completedHunts, setCompletedHunts] = useState([]);
     const [userId, setUserId] = useState(null);
+    const [userInfo, setUserInfo] = useState("")
 
     const fetchHunts = async () => {
         try {
             const id = await AsyncStorage.getItem('loggedInUser');
             setUserId(id);
+           
 
             // Hämta användarens data
             const userResponse = await axios.get(`https://historyhunt-12cfa-default-rtdb.firebaseio.com/user/${id}.json`);
             const userData = userResponse.data;
+             setUserInfo(userData)
+             console.log(userInfo)
+            
 
             // Hämta alla hunts från Firebase
             const huntsResponse = await axios.get('https://historyhunt-12cfa-default-rtdb.firebaseio.com/hunts.json');
@@ -274,33 +279,48 @@ const StartScreen = ({ navigation }) => {
 
 
         <View style={styles.container}>
-        <UserAvatar uri={userImage} onImagePicked={handleImagePicked} />
+            <View style={styles.avatarContainer}>
+            <UserAvatar uri={userImage} onImagePicked={handleImagePicked} style={styles.avatar} />
+           <Text style={styles.username}>{userInfo.username } </Text>
+            </View>
+        
 
-        <Text>ANDRA HUNTS DÄR JAG ÄR INBJUDEN</Text>
+        <Text style={styles.text}>ACTIVE HUNTS</Text>
         <FlatList
             data={activeHunts}
             renderItem={({ item }) => (
                 <Pressable onPress={() => handleHuntPress(item)}>
-                    <HuntItem title={item.title} />
+
+                       <View style={styles.showHuntsContainer} >
                     <Medals uri={item.image} />
+                    <HuntItem  title={item.title} />
+                    </View>
+
                 </Pressable>
             )}
             keyExtractor={(item) => item.id}
         />
 
-        <Text>MINA HUNTS</Text>
+        <Text style={styles.text}>PLANNED HUNTS</Text>
         <FlatList
             data={plannedHunts}
             renderItem={({ item }) => (
                 <Pressable onPress={() => handleHuntPress(item)}>
-                    <HuntItem title={item.title} />
+                    <View style={styles.showHuntsContainer} >
                     <Medals uri={item.image} />
+                    <HuntItem  title={item.title} />
+                    </View>
                 </Pressable>
             )}
             keyExtractor={(item) => item.id}
         />
+ <Button title="Create Hunt" onPress={() => navigation.navigate('CreateHunt')} />
 
-        <Text>Completed Hunts</Text>
+<View style={styles.containerLine}>
+<View style={styles.line} />
+        <Text style={styles.medals}> MEDALS</Text>
+        <View style={styles.line} />
+        </View>
         <FlatList
     data={completedHunts.reduce((uniqueHunts, hunt) => {
         const isDuplicate = uniqueHunts.some(item => item.title === hunt.title);
@@ -311,7 +331,7 @@ const StartScreen = ({ navigation }) => {
     }, [])}
     renderItem={({ item }) => (
         <Pressable onPress={() => handleHuntPress(item)}>
-            <HuntItem title={item.title} />
+            {/* <HuntItem title={item.title} /> */}
             <Medals uri={item.image} />
         </Pressable>
     )}
@@ -319,7 +339,7 @@ const StartScreen = ({ navigation }) => {
 />
 
 
-        <Button title="Create Hunt" onPress={() => navigation.navigate('CreateHunt')} />
+       
     </View>
     );
 };
@@ -328,6 +348,70 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 16,
+     
+    },
+    avatarContainer: {
+        justifyContent: 'center',
+        alignItems: 'center', 
+        marginBottom: 30,  
+        marginTop: 30,
+        borderRadius: 100,
+       
+
+         
+     
+       
+
+    },
+    avatar: {
+        height: 200,
+        width: 200,
+        borderRadius: 100,
+        
+    
+
+    },
+    showHuntsContainer:{
+        flexDirection: 'row',
+       
+      
+    },
+    username: {
+        fontSize: 40,
+        fontWeight: '200',
+        textAlign: 'center',
+        marginTop: 10,
+        marginBottom: 10,
+        
+
+
+    },
+    text: {
+        marginBottom: 5,
+        color: '#ee00ee7e',
+        fontWeight: '600'
+    },
+   
+
+    medals:{
+        fontSize: 24,
+        fontWeight: 'bold',
+        textAlign: 'center',
+        marginTop: 10,
+        marginBottom: 10,
+        color: '#0046c9a4'
+
+    },
+    line: {
+        flex: 1, 
+        height: 1,
+        backgroundColor: '#ccc',
+
+    },
+    containerLine: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginVertical: 16,  
     },
 });
 

@@ -9,10 +9,13 @@ const Button = ({ onPress, title }) => (
 
 const styles = StyleSheet.create({
     button: {
-        backgroundColor: '#6200ea',
-        padding: 10,
-        borderRadius: 5,
+        width: '80%',
+        height: 50,
+        backgroundColor: '#6A5ACD', // Lila bakgrundsfärg
+        justifyContent: 'center',
         alignItems: 'center',
+        borderRadius: 25, // Rundade hörn på knappen
+        marginTop: 24,
     },
     text: {
         color: '#ffffff',

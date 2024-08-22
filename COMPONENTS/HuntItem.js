@@ -10,11 +10,12 @@ const HuntItem = ({ title }) => (
 const styles = StyleSheet.create({
     huntItem: {
         padding: 15,
-        borderBottomWidth: 1,
-        borderBottomColor: '#ccc',
+        
     },
     title: {
-        fontSize: 18,
+        fontSize: 14,
+        fontWeight: '600'
+        
     },
 });
 

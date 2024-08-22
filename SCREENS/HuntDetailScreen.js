@@ -1,6 +1,7 @@
 import React from 'react';
-import { View, Text, Button, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
+import Button from '../COMPONENTS/Button'
 
 const HuntDetailScreen = ({ navigation, route }) => {
     const { hunt, completedHunts, plannedHunts, activeHunts, setActiveHunts, setPlannedHunts, setCompletedHunts } = route.params;
