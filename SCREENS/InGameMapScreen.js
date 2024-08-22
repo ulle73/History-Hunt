@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import {
     View,
-    Button,
+   
     StyleSheet,
     Text,
     Image,
     Alert,
     ScrollView,
+    Dimensions
 } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import MapViewDirections from "react-native-maps-directions";
@@ -17,6 +18,7 @@ import {
 } from "expo-image-picker";
 import axios from "axios"
 import * as MediaLibrary from 'expo-media-library';
+import Button from '../COMPONENTS/Button'
 
 const GOOGLE_MAPS_APIKEY = "AIzaSyCjCPzxEsoRdmj2A5mX7YO_y_yd4H_tVEg";
 
@@ -316,44 +318,56 @@ return (
         </MapView>
 
         {selectedMarker && (
-            <View style={styles.actions}>
-                <Button title="Take Photo" onPress={takeImageHandler} />
-                <Text>
-                    {photos.length}/{hunt.locations.selectedLocations.length + 1}{" "}
-                    locations visited
-                </Text>
-                {photos.map((photo, index) => (
-                    <Image
-                        key={index}
-                        source={{ uri: photo }}
-                        style={styles.previewImage}
-                    />
-                ))}
-            </View>
-        )}
-    </ScrollView>
+    <View style={styles.actions}>
+        <Button title="Take Photo" onPress={takeImageHandler} />
+        <Text style={styles.text}>
+            {photos.length}/{hunt.locations.selectedLocations.length + 1}{" "}
+            locations visited
+        </Text>
+        
+        {/* Radlayout för bilderna */}
+        <View style={styles.imgContainer}>
+            {photos.map((photo, index) => (
+                <Image
+                    key={index}
+                    source={{ uri: photo }}
+                    style={styles.previewImage}
+                />
+            ))}
+        </View>
+    </View>
+)}
+</ScrollView>
 );
 }
 
 const styles = StyleSheet.create({
     form: {
         flex: 1,
-        padding: 24,
     },
     map: {
-        width: "100%",
-        height: 400,
-        marginVertical: 16,
+        height: 500,
+        width: Dimensions.get('window').width,
     },
     actions: {
-        marginVertical: 16,
         alignItems: "center",
     },
-    previewImage: {
-        width: "100%",
-        height: 200,
-        marginTop: 16,
+    imgContainer: {
+        flexDirection: 'row', // Placera bilderna horisontellt
+        flexWrap: 'wrap',      // Radbryter om bilderna inte får plats på en rad
+        justifyContent: 'center', // Centrerar bilderna horisontellt
     },
+    previewImage: {
+        width: 100,
+        height: 100,
+        margin: 5, // Lägger till utrymme mellan bilderna
+        borderRadius: 50,
+    },
+    text: {
+        marginTop: 5,
+        marginBottom: 5,
+        color:  '#ee00ee7e',
+    }
 });
 
 export default InGameMapScreen;

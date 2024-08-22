@@ -45,6 +45,9 @@ const HuntDetailScreen = ({ navigation, route }) => {
                 ))}
             </MapView>
 
+            <Text style={styles.pick}>This should take:</Text>
+            <Text style={styles.hunt}>~ {hunt.estimatedTime} hours</Text>
+
             <Button title="Start Hunt" onPress={() => navigation.navigate('InGame', { huntId: hunt.id, hunt, setActiveHunts, setPlannedHunts, setCompletedHunts , completedHunts, activeHunts   })} />
         </View>
     );

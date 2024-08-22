@@ -67,16 +67,22 @@ export default ImagePicker;
 
 const styles = StyleSheet.create({
     imagePreview: {
-        width: '100%',
-        height: 200,
+        width: '20%',
+        height: '20%',
         marginVertical: 8,
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: 'white',
-        borderRadius: 4
+        borderRadius: 25,
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: 'space-evenly',
     },
     image: {
-        width: '100%',
-        height: '100%'
+        width: 100,
+        height: 100,
+        borderRadius: 25,
+        flexDirection: 'row',
+        flexWrap: 'wrap',
     }
 });
