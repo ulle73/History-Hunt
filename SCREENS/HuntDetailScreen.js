@@ -8,7 +8,9 @@ const HuntDetailScreen = ({ navigation, route }) => {
 
     return (
         <View style={styles.container}>
-            <Text>Hunt Details for hunt {hunt.id}</Text>
+              <Text style={styles.title}>Customize Hunt</Text>
+              <Text style={styles.pick}>You picked:</Text>
+            <Text style={styles.hunt}>{hunt.title}</Text>
             
             <MapView
                 style={styles.map}
@@ -51,14 +53,76 @@ const HuntDetailScreen = ({ navigation, route }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center',
         padding: 16,
+        backgroundColor: '#ffffff',
+        alignItems: 'center'
+    },
+    title: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        textAlign: 'center',
+        marginVertical: 10,
+    },
+    subtitle: {
+        fontSize: 16,
+        textAlign: 'center',
+        color: '#8E8E93',
+        marginBottom: 4,
+    },
+    huntName: {
+        fontSize: 18,
+        textAlign: 'center',
+        fontWeight: '600',
+        color: '#4A4A4A',
+        marginBottom: 10,
+    },
+    routeText: {
+        textAlign: 'center',
+        color: '#8E8E93',
+        marginBottom: 10,
     },
     map: {
         width: '100%',
-        height: 400,
+        height: 250,
         marginBottom: 16,
+        borderRadius: 10,
+        overflow: 'hidden',
     },
+    timeText: {
+        textAlign: 'center',
+        color: '#8E8E93',
+        marginTop: 10,
+    },
+    estimatedTime: {
+        textAlign: 'center',
+        fontSize: 24,
+        fontWeight: '600',
+        color: '#000000',
+        marginVertical: 10,
+    },
+    buttonContainer: {
+        marginTop: 20,
+        alignItems: 'center',
+    },
+    title: {
+        fontSize: 32,
+        fontWeight: 'bold',
+        marginBottom: 20,
+        textAlign: 'center'
+    },
+    pick: {
+           color: '#ee00ee7e',
+        fontWeight: '600',
+        textAlign: 'center',
+        marginBottom: 5
+    },
+    hunt: {
+        textAlign: 'center',
+        fontSize: 24,
+        fontWeight: 400,
+        marginBottom: 20,
+    }
 });
+
 
 export default HuntDetailScreen;
